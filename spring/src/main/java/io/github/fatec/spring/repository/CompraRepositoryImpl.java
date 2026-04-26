@@ -8,6 +8,7 @@ import io.github.fatec.spring.repository.orm.CompraOrmMongo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional; // 👈 Importação necessária adicionada
 import java.util.stream.Collectors;
 
 @Component
@@ -56,5 +57,39 @@ public class CompraRepositoryImpl implements CompraRepository {
                         c.getDataCompra()
                 ))
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<Compra> listarTodas() {
+        return repository.findAll()
+                .stream()
+                .map(c -> new Compra(
+                        c.getId(),
+                        c.getClienteId(),
+                        c.getItens().stream()
+                                .map(i -> new ItemCompra(i.produtoId, i.quantidade))
+                                .collect(Collectors.toList()),
+                        c.getDataCompra()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Compra> buscarPorId(String id) {
+        return repository.findById(id)
+                .map(c -> new Compra(
+                        c.getId(),
+                        c.getClienteId(),
+                        c.getItens().stream()
+                                .map(i -> new ItemCompra(i.produtoId, i.quantidade))
+                                .collect(Collectors.toList()),
+                        c.getDataCompra()
+                ));
+    }
+
+    @Override
+    public void deletarCompra(String id) {
+        repository.deleteById(id);
     }
 }

@@ -78,6 +78,8 @@ public class ProdutoService {
         return compraRepository.salvar(compra);
     }
 
+
+
     public List<Compra> listarComprasPorCliente(String clienteId) {
         return compraRepository.buscarPorClienteId(clienteId);
     }
